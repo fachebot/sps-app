@@ -33,7 +33,7 @@ import RightImage from '../components/images/RightImage.vue'
 .banner {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 72px);
   justify-content: center;
   position: relative;
   text-align: center
