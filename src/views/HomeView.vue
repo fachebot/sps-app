@@ -1,7 +1,23 @@
-<script setup lang="ts">
+<script lang="ts">
+import router from "@/router";
+import { defineComponent } from 'vue'
 import LeftImage from '../components/images/LeftImage.vue'
 import RightImage from '../components/images/RightImage.vue'
 
+export default defineComponent({
+  components: {
+    LeftImage,
+    RightImage
+  },
+
+  setup() {
+    return {
+      routerLinkTo(key: string) {
+        router.push({ path: key })
+      }
+    }
+  },
+})
 </script>
 
 <template>
@@ -20,7 +36,7 @@ import RightImage from '../components/images/RightImage.vue'
     <n-p style="font-size: 16px; margin-top: 0px;"> 可用于服务器告警、程序监控通知等场景</n-p>
 
     <div>
-      <n-button type="primary" size="large">开始使用</n-button>
+      <n-button type="primary" size="large" @click="routerLinkTo('/profile')">开始使用</n-button>
     </div>
 
     <n-el class="left-image">
@@ -29,7 +45,7 @@ import RightImage from '../components/images/RightImage.vue'
   </div>
 </template>
 
-<style>
+<style scoped>
 .banner {
   display: flex;
   flex-direction: column;
