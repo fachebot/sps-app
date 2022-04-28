@@ -27,7 +27,7 @@ export default defineComponent({
     <CopyText :text="openId"></CopyText>
 
     <n-h6>接口地址</n-h6>
-    <CopyText :text="baseuri + '/' + projectId">
+    <CopyText :text="baseuri + '/api/push/' + projectId + '?title=标题&content=内容'">
     </CopyText>
   </div>
 </template>

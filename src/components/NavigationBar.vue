@@ -1,9 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { auth } from "@/api"
 import router from "@/router"
 import { useMessage } from 'naive-ui'
 import type { MenuOption } from "naive-ui"
+import type { User } from "@/api"
+import { authentication, getMe } from "@/api"
 import { useAccountStore } from '@/stores/account'
 import detectEthereumProvider from '@metamask/detect-provider'
 
@@ -36,10 +37,26 @@ export default defineComponent({
         const signature = await provider.request(request)
 
         this.showModal = true
-        const res = await auth(provider.selectedAddress, ts, signature)
-        this.showModal = false
+        const res = await authentication(provider.selectedAddress, ts, signature)
 
-        account.setupWallet(provider)
+        if (!res.ok) {
+          this.showModal = false
+          this.message.error(res.description as string)
+          return
+        }
+
+        const getMeRes = await getMe(res.result.access_token)
+        if (!getMeRes.ok) {
+          this.showModal = false
+          this.message.error(getMeRes.description as string)
+          return
+        }
+        const user = getMeRes.result as User;
+
+        this.showModal = false
+        account.setUser(user)
+        account.setProvider(provider)
+        account.setAccessToken(res.result.access_token)
 
         this.connected = true
         this.address = provider.selectedAddress;
@@ -51,7 +68,6 @@ export default defineComponent({
   },
 
   setup() {
-
     const menuOptions: MenuOption[] = [
       {
         label: "首页",
@@ -65,7 +81,6 @@ export default defineComponent({
 
     return {
       menuOptions,
-
       routerLinkTo(key: string) {
         router.push({ path: key })
       },

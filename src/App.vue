@@ -12,15 +12,17 @@ export default defineComponent({
 <template>
   <main>
     <n-message-provider>
-      <n-layout position="absolute">
-        <n-layout-scroll-container>
-          <NavigationBar></NavigationBar>
+      <n-loading-bar-provider>
+        <n-layout position="absolute">
+          <n-layout-scroll-container>
+            <NavigationBar></NavigationBar>
 
-          <n-layout position="absolute" style="top: var(--header-height);">
-            <RouterView />
-          </n-layout>>
-        </n-layout-scroll-container>
-      </n-layout>
+            <n-layout position="absolute" style="top: var(--header-height);">
+              <RouterView />
+            </n-layout>>
+          </n-layout-scroll-container>
+        </n-layout>
+      </n-loading-bar-provider>
     </n-message-provider>
   </main>
 </template>

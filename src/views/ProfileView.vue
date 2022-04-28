@@ -1,56 +1,86 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { useAccountStore } from '@/stores/account'
 import EndpointCard from '../components/EndpointCard.vue'
 import TransportCard from '../components/TransportCard.vue'
+import TryItOutApiCard from '../components/TryItOutApiCard.vue'
+
+const placeholder = '********************************'
 
 export default defineComponent({
   components: {
     EndpointCard,
-    TransportCard
+    TransportCard,
+    TryItOutApiCard
+  },
+
+  computed: {
+    show() {
+      const account = useAccountStore()
+      return account.user == null
+    },
+    openId() {
+      const account = useAccountStore()
+      if (!account.user) {
+        return placeholder
+      }
+      return account.user.open_id
+    },
+    projectId() {
+      const account = useAccountStore()
+      if (!account.user) {
+        return placeholder
+      }
+      return account.user.project_id
+    },
+    connectedTransports() {
+      const account = useAccountStore()
+      if (!account.user) {
+        return []
+      }
+
+      return account.user.transports.filter((value) => value.connected).map((value) => {
+        return value.type
+      })
+    }
   }
 })
 </script>
 
 <template>
+
   <div class="content" style="overflow: hidden;">
-    <n-grid x-gap="12" :cols="3" style="padding-top: 5vh;">
-      <n-gi />
+    <n-grid :cols="10" item-responsive responsive="screen" style="padding-top: 5vh;">
+      <n-gi span="0 m:2 l:3" />
 
-      <n-gi>
-        <!-- Endpoint -->
-        <n-card class="card" title="我的接口" header-style="text-align: left;">
-          <EndpointCard openId="8babf611-87b5-414f-9a9c-e1bd6fde904e"
-            projectId="O3bnoP83RVKOWdivimCpZpdKCJ3xSpIVzbkvVdty9yhT3z8ZOckLdmoCO0BLuhAf">
-          </EndpointCard>
-        </n-card>
+      <n-gi span="10 m:6 l:4">
+        <n-space vertical>
+          <n-spin :show="show" size="large">
+            <template #icon>
+            </template>
+            <template #description>
+              登录后可用
+            </template>
 
-        <!-- Transport -->
-        <n-card class="card" title="社交账号" header-style="text-align: left;">
-          <TransportCard></TransportCard>
-        </n-card>
+            <!-- Endpoint -->
+            <n-card class="card" title="我的接口" header-style="text-align: left;">
+              <EndpointCard :openId="openId" :projectId="projectId">
+              </EndpointCard>
+            </n-card>
 
-        <!-- Try it online -->
-        <n-card class="card" title="在线工具" header-style="text-align: left;">
-          <n-form label-placement="left" label-width="auto" require-mark-placement="right-hanging">
-            <n-form-item class="try-it-input" label="标题" path="inputValue">
-              <n-input placeholder="" />
-            </n-form-item>
-            <n-form-item class="try-it-input" label="内容" path="textareaValue">
-              <n-input placeholder="" type="textarea" :autosize="{
-                minRows: 3,
-                maxRows: 5
-              }" />
-            </n-form-item>
-            <div>
-              <n-button type="primary">
-                发送
-              </n-button>
-            </div>
-          </n-form>
-        </n-card>
+            <!-- Transport -->
+            <n-card class="card" title="社交账号" header-style="text-align: left;">
+              <TransportCard :openId="openId" :connectedTransports="connectedTransports"></TransportCard>
+            </n-card>
+
+            <!-- Try it out api -->
+            <n-card class="card" title="在线工具" header-style="text-align: left;">
+              <TryItOutApiCard :projectId="projectId"></TryItOutApiCard>
+            </n-card>
+          </n-spin>
+        </n-space>
       </n-gi>
-
-      <n-gi />
+      <n-gi span="0 m:2 l:3" />
     </n-grid>
   </div>
 </template>
@@ -66,9 +96,5 @@ export default defineComponent({
 
 .content .card {
   margin-bottom: 20px;
-}
-
-.content .card .try-it-input {
-  text-align: left
 }
 </style>

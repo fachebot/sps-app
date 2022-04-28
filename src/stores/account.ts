@@ -1,15 +1,24 @@
 import { defineStore } from 'pinia'
+import type { User } from "@/api"
 
 export const useAccountStore = defineStore({
   id: 'account',
   state: () => ({
-    ethereum: null
+    user: null as unknown as User,
+    ethereum: null as unknown as any,
+    accessToken: ''
   }),
   getters: {
   },
   actions: {
-    setupWallet(ethereum: any) {
-      this.ethereum = ethereum;
+    setUser(user: User) {
+      this.user = user
+    },
+    setProvider(ethereum: any) {
+      this.ethereum = ethereum
+    },
+    setAccessToken(accessToken: string) {
+      this.accessToken = accessToken
     }
   }
 })
